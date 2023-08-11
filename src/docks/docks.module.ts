@@ -7,6 +7,6 @@ import { Dock } from 'src/docks/entities/dock.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Dock])],
   providers: [DocksService],
-  controllers: [DocksController]
+  controllers: [DocksController],
 })
 export class DocksModule {}

@@ -35,11 +35,11 @@ module.exports = {
           'Add "{ infer: true }" to configService.get() for correct typechecking. Example: configService.get("database.port", { infer: true })',
       },
     ],
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
-  'prettier/prettier': [
-    'error',
-    {
-      endOfLine: 'auto',
-    },
-  ],
 };

@@ -1,6 +1,15 @@
 // src/bike/bike.controller.ts
 
-import { Controller, Get, Post, Body, Put, Param, ParseIntPipe, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  ParseIntPipe,
+  Delete,
+} from '@nestjs/common';
 import { BikeService } from './bike.service';
 import { Bike } from './entities/bike.entity';
 
@@ -27,7 +36,10 @@ export class BikeController {
   }
 
   @Put(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateData: Partial<Bike>): Promise<Bike> {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateData: Partial<Bike>,
+  ): Promise<Bike> {
     return this.bikeService.update(id, updateData);
   }
 

@@ -1,9 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { Bike } from '../../bike/entities/bike.entity';
 import { EntityHelper } from '../../utils/entity-helper';
 
 @Entity()
-export class Dock extends EntityHelper  {
+export class Dock extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -16,7 +22,7 @@ export class Dock extends EntityHelper  {
   @Column()
   image: string;
 
-  @OneToMany(() => Bike, bike => bike.dock)
+  @OneToMany(() => Bike, (bike) => bike.dock)
   @JoinColumn()
   bikes: Bike[];
 

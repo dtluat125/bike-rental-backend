@@ -1,10 +1,21 @@
 // src/dock/dock.controller.ts
 
-import { Controller, Get, Param, Post, Body, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { DocksService } from './docks.service';
 import { Dock } from 'src/docks/entities/dock.entity';
 
-@Controller('dock')
+@Controller({
+  path: 'docks',
+  version: '1',
+})
 export class DocksController {
   constructor(private readonly dockService: DocksService) {}
 
@@ -24,7 +35,10 @@ export class DocksController {
   }
 
   @Put(':id')
-  async updateDock(@Param('id') id: number, @Body() updateDockDto: Partial<Dock>) {
+  async updateDock(
+    @Param('id') id: number,
+    @Body() updateDockDto: Partial<Dock>,
+  ) {
     return this.dockService.update(id, updateDockDto);
   }
 

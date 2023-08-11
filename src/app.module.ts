@@ -28,6 +28,8 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { SessionModule } from './session/session.module';
 import { MailerModule } from './mailer/mailer.module';
+import { BikeModule } from './bike/bike.module';
+import { DocksModule } from './docks/docks.module';
 
 @Module({
   imports: [
@@ -87,6 +89,8 @@ import { MailerModule } from './mailer/mailer.module';
     MailModule,
     MailerModule,
     HomeModule,
+    BikeModule,
+    DocksModule,
   ],
 })
 export class AppModule {}

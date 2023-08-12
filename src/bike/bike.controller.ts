@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { BikeService } from './bike.service';
 import { Bike } from './entities/bike.entity';
+import { CreateBikeDto } from './dto/create-bike.dto';
+import { UpdateBikeDto } from './dto/update-bike.dto';
 
 @Controller({
   path: 'bikes',
@@ -21,7 +23,7 @@ export class BikeController {
   constructor(private readonly bikeService: BikeService) {}
 
   @Post()
-  create(@Body() bikeData: Partial<Bike>): Promise<Bike> {
+  create(@Body() bikeData: CreateBikeDto): Promise<Bike> {
     return this.bikeService.create(bikeData);
   }
 
@@ -38,8 +40,9 @@ export class BikeController {
   @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateData: Partial<Bike>,
+    @Body() updateData: UpdateBikeDto,
   ): Promise<Bike> {
+    console.log(updateData);
     return this.bikeService.update(id, updateData);
   }
 

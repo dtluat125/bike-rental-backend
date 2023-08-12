@@ -1,16 +1,17 @@
 // src/dock/dock.controller.ts
 
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
-  Body,
   Put,
-  Delete,
 } from '@nestjs/common';
 import { DocksService } from './docks.service';
-import { Dock } from 'src/docks/entities/dock.entity';
+import { CreateDockDto } from './dto/create-dock.dto';
+import { UpdateDockDto } from './dto/update-dock.dto';
 
 @Controller({
   path: 'docks',
@@ -30,14 +31,14 @@ export class DocksController {
   }
 
   @Post()
-  async createDock(@Body() createDockDto: Partial<Dock>) {
+  async createDock(@Body() createDockDto: CreateDockDto) {
     return this.dockService.create(createDockDto);
   }
 
   @Put(':id')
   async updateDock(
     @Param('id') id: number,
-    @Body() updateDockDto: Partial<Dock>,
+    @Body() updateDockDto: UpdateDockDto,
   ) {
     return this.dockService.update(id, updateDockDto);
   }

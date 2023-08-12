@@ -30,6 +30,8 @@ import { SessionModule } from './session/session.module';
 import { MailerModule } from './mailer/mailer.module';
 import { BikeModule } from './bike/bike.module';
 import { DocksModule } from './docks/docks.module';
+import { TransactionsModule } from './transactions/transactions.module';
+import { RentalsModule } from './rentals/rentals.module';
 
 @Module({
   imports: [
@@ -91,6 +93,8 @@ import { DocksModule } from './docks/docks.module';
     HomeModule,
     BikeModule,
     DocksModule,
+    TransactionsModule,
+    RentalsModule,
   ],
 })
 export class AppModule {}

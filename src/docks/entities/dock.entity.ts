@@ -19,7 +19,7 @@ export class Dock extends EntityHelper {
   @Column()
   location: string;
 
-  @Column()
+  @Column({ nullable: true })
   image: string;
 
   @OneToMany(() => Bike, (bike) => bike.dock)

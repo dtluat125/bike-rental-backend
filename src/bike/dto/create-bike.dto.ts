@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, Validate } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Validate,
+} from 'class-validator';
+import { BikeType } from 'src/bike/constants';
 import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
 
 export class CreateBikeDto {
@@ -8,14 +15,19 @@ export class CreateBikeDto {
   @Validate(IsNotExist, ['Bike'], {
     message: 'barcodeAlreadyExist',
   })
-  barcode: string | null;
+  barcode: string;
 
-  @ApiProperty({ enum: ['Type1', 'Type2', 'Type3'] })
+  @ApiProperty({ enum: BikeType })
   @IsNotEmpty()
-  type: string | null;
+  @IsEnum(BikeType)
+  type: BikeType;
 
   @ApiProperty({ example: 'bike.jpg' })
   image: string;
+
+  @ApiProperty({ example: 'ABC123' })
+  @IsNotEmpty()
+  name: string;
 
   @ApiProperty({ example: 'ABC123' })
   @IsNotEmpty()
@@ -26,7 +38,11 @@ export class CreateBikeDto {
   battery: number;
 
   @ApiProperty({ example: 20 })
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   rentingPrice: number;
+
+  @ApiProperty()
+  @IsOptional()
+  dock: number;
 }

@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Bike } from './entities/bike.entity';
+import { CreateBikeDto } from './dto/create-bike.dto';
+import { UpdateBikeDto } from './dto/update-bike.dto';
 
 @Injectable()
 export class BikeService {
@@ -15,19 +17,24 @@ export class BikeService {
   }
 
   async getBikeDetail(id: number): Promise<Bike> {
-    const bike = await this.bikeRepository.findOneBy({ id });
+    const bike = await this.bikeRepository.findOne({
+      where: { id },
+      relations: ['dock'],
+    });
     if (!bike) {
       throw new NotFoundException(`Bike with ID ${id} not found`);
     }
     return bike;
   }
 
-  async create(createBikeDto: Partial<Bike>): Promise<Bike> {
-    const bike = this.bikeRepository.create(createBikeDto);
+  async create(createBikeDto: CreateBikeDto): Promise<Bike> {
+    console.log(createBikeDto);
+    const bike = this.bikeRepository.create(createBikeDto as unknown as Bike);
     return this.bikeRepository.save(bike);
   }
 
-  async update(id: number, updateBikeDto: Partial<Bike>): Promise<Bike> {
+  async update(id: number, updateBikeDto: UpdateBikeDto): Promise<Bike> {
+    console.log(updateBikeDto);
     const bike = await this.getBikeDetail(id);
     Object.assign(bike, updateBikeDto);
     return this.bikeRepository.save(bike);

@@ -1,11 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { BikeStatus, BikeType } from 'src/bike/constants';
 
 export class UpdateBikeDto {
-  @ApiProperty({ example: 'Type1' })
-  @IsNotEmpty()
+  @ApiProperty({ enum: BikeType })
   @IsOptional()
-  type: string;
+  @IsEnum(BikeType)
+  type: BikeType;
+
+  @ApiProperty({ enum: BikeStatus })
+  @IsOptional()
+  @IsEnum(BikeStatus)
+  status: BikeStatus;
 
   @ApiProperty({ example: 'bike.jpg' })
   @IsOptional()
@@ -26,4 +32,9 @@ export class UpdateBikeDto {
   @IsNumber()
   @IsOptional()
   rentingPrice: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  dock: number;
 }

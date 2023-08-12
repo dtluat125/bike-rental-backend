@@ -1,8 +1,15 @@
 // src/bike/bike.entity.ts
 
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { Dock } from '../../docks/entities/dock.entity';
+import { BikeStatus, BikeType } from 'src/bike/constants';
 
 @Entity()
 export class Bike extends EntityHelper {
@@ -15,10 +22,14 @@ export class Bike extends EntityHelper {
   @Column()
   name: string;
 
-  @Column()
-  type: string;
+  @Column({
+    type: 'enum',
+    enum: BikeType,
+    default: BikeType.STANDARD,
+  })
+  type: BikeType;
 
-  @Column()
+  @Column({ nullable: true })
   image: string;
 
   @Column()
@@ -30,7 +41,14 @@ export class Bike extends EntityHelper {
   @Column()
   rentingPrice: number;
 
-  @ManyToOne(() => Dock, dock => dock.bikes)
+  @Column({
+    type: 'enum',
+    enum: BikeStatus,
+    default: BikeStatus.FREE,
+  })
+  status: BikeStatus;
+
+  @ManyToOne(() => Dock, (dock) => dock.bikes, { cascade: true })
   @JoinColumn({ name: 'dockId' })
   dock: Dock;
 }

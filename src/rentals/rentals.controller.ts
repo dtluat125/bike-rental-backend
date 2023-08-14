@@ -26,7 +26,7 @@ export class RentalsController {
   }
 
   @Get('')
-  async getAllRental(@Param('id') id: number) {
+  async getAllRental() {
     return this.rentalService.getAllRentals();
   }
 

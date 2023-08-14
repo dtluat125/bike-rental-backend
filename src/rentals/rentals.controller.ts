@@ -20,6 +20,16 @@ export class RentalsController {
     return this.rentalService.createRental(createRentalDto);
   }
 
+  @Put(':id/finish-rental')
+  async returnRental(@Param('id') id: number) {
+    return this.rentalService.returnRental(id);
+  }
+
+  @Get('')
+  async getAllRental(@Param('id') id: number) {
+    return this.rentalService.getAllRentals();
+  }
+
   @Get(':id')
   async getRental(@Param('id') id: number) {
     return this.rentalService.getRental(id);

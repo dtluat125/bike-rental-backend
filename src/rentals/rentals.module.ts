@@ -5,10 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Rental } from './entities/rental.entity';
 import { Bike } from '../bike/entities/bike.entity';
 import { BikeService } from '../bike/bike.service';
+import { PricingsService } from 'src/pricings/pricings.service';
+import { Pricing } from '../pricings/entities/pricing.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Rental, Bike])],
+  imports: [TypeOrmModule.forFeature([Rental, Bike, Pricing])],
   controllers: [RentalsController],
-  providers: [RentalsService, BikeService],
+  providers: [RentalsService, BikeService, PricingsService],
 })
 export class RentalsModule {}

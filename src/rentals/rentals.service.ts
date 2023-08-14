@@ -10,6 +10,7 @@ import { Rental } from 'src/rentals/entities/rental.entity';
 import { Repository } from 'typeorm';
 import { CreateRentalDto } from './dto/create-rental.dto';
 import { UpdateRentalDto } from './dto/update-rental.dto';
+import { PricingsService } from 'src/pricings/pricings.service';
 
 @Injectable()
 export class RentalsService {
@@ -17,6 +18,7 @@ export class RentalsService {
     @InjectRepository(Rental)
     private rentalRepository: Repository<Rental>,
     private readonly bikeService: BikeService,
+    private readonly pricingService: PricingsService,
   ) {}
 
   async createRental(createRentalDto: CreateRentalDto): Promise<Rental> {
@@ -35,6 +37,10 @@ export class RentalsService {
     return this.rentalRepository.save(rental);
   }
 
+  async getAllRentals(): Promise<Rental[]> {
+    return this.rentalRepository.find();
+  }
+
   async getRental(id: number): Promise<Rental> {
     const rental = await this.rentalRepository.findOne({
       where: { id },
@@ -45,11 +51,24 @@ export class RentalsService {
     }
 
     const currentTime = new Date();
-    const rentingTimeDifference = Math.floor(
-      (currentTime.getTime() - rental.rentalDate.getTime()) / (1000 * 60),
+    const rentalDateLocal = new Date(
+      rental.rentalDate.getTime() -
+        rental.rentalDate.getTimezoneOffset() * 60 * 1000,
     );
-    console.log(currentTime.getTime(), rental.rentalDate.getTime());
-    return { ...rental, rentingTime: rentingTimeDifference } as any;
+
+    const rentingTimeDifference = Math.floor(
+      (currentTime.getTime() - rentalDateLocal.getTime()) / (1000 * 60),
+    );
+    console.log(currentTime.getTime(), rentalDateLocal.getTime());
+    const currentPrice = await this.pricingService.calculateRentingPrice(
+      rentingTimeDifference,
+      rental.bike.type,
+    );
+    return {
+      ...rental,
+      rentingTime: rentingTimeDifference,
+      currentPrice: currentPrice,
+    } as any;
   }
 
   async updateRental(
@@ -64,6 +83,17 @@ export class RentalsService {
   async deleteRental(id: number): Promise<void> {
     const rental = await this.getRental(id);
     await this.rentalRepository.remove(rental);
+  }
+
+  async returnRental(id: number) {
+    const updatedRental = {
+      returnDate: new Date(),
+    };
+    const response = await this.updateRental(id, updatedRental as any);
+    await this.bikeService.update(response.bike.id, {
+      status: BikeStatus.FREE,
+    } as any);
+    return response;
   }
 
   // async returnBike(id: number): Promise<>;

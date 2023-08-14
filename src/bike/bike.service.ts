@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Bike } from './entities/bike.entity';
 import { CreateBikeDto } from './dto/create-bike.dto';
 import { UpdateBikeDto } from './dto/update-bike.dto';
+import { getDeposit } from '../rentals/utils';
 
 @Injectable()
 export class BikeService {
@@ -24,7 +25,7 @@ export class BikeService {
     if (!bike) {
       throw new NotFoundException(`Bike with ID ${id} not found`);
     }
-    return bike;
+    return { ...bike, deposit: getDeposit(bike.type) } as any;
   }
 
   async create(createBikeDto: CreateBikeDto): Promise<Bike> {

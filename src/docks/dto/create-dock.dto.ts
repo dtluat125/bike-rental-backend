@@ -15,6 +15,14 @@ export class CreateDockDto {
   @IsOptional()
   image: string;
 
+  @ApiProperty({ example: 'dock.jpg' })
+  @IsNotEmpty()
+  dockArea: string;
+
+  @ApiProperty({ example: 'dock.jpg' })
+  @IsNotEmpty()
+  totalPoints: number;
+
   @ApiProperty()
   @IsOptional()
   bikes: Bike[];

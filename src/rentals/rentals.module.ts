@@ -7,10 +7,12 @@ import { Bike } from '../bike/entities/bike.entity';
 import { BikeService } from '../bike/bike.service';
 import { PricingsService } from 'src/pricings/pricings.service';
 import { Pricing } from '../pricings/entities/pricing.entity';
+import { DocksService } from '../docks/docks.service';
+import { Dock } from '../docks/entities/dock.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Rental, Bike, Pricing])],
+  imports: [TypeOrmModule.forFeature([Rental, Bike, Pricing, Dock])],
   controllers: [RentalsController],
-  providers: [RentalsService, BikeService, PricingsService],
+  providers: [RentalsService, BikeService, PricingsService, DocksService],
 })
 export class RentalsModule {}

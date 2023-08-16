@@ -11,6 +11,8 @@ import { Repository } from 'typeorm';
 import { CreateRentalDto } from './dto/create-rental.dto';
 import { UpdateRentalDto } from './dto/update-rental.dto';
 import { PricingsService } from 'src/pricings/pricings.service';
+import { DocksService } from 'src/docks/docks.service';
+import { ReturnBikeDto } from 'src/rentals/dto/return-bike.dto';
 
 @Injectable()
 export class RentalsService {
@@ -18,6 +20,7 @@ export class RentalsService {
     @InjectRepository(Rental)
     private rentalRepository: Repository<Rental>,
     private readonly bikeService: BikeService,
+    private readonly docksService: DocksService,
     private readonly pricingService: PricingsService,
   ) {}
 
@@ -26,13 +29,23 @@ export class RentalsService {
     console.log(createRentalDto);
     if (bike.status !== BikeStatus.FREE)
       throw new BadRequestException('Bike is in used');
-
+    const dock = await this.docksService.getDockContainsBike(
+      createRentalDto.bike,
+    );
+    console.log('dock: ', dock);
+    if (!dock) throw new BadRequestException('Bike not available in any docks');
     const rental = this.rentalRepository.create(
       createRentalDto as unknown as Rental,
     );
 
     await this.bikeService.update(createRentalDto.bike, {
       status: BikeStatus.IN_USE,
+    } as any);
+
+    await this.docksService.update(dock.id, {
+      bikes: dock.bikes.filter(
+        (bike) => bike.id !== createRentalDto.bike,
+      ) as any,
     } as any);
     return this.rentalRepository.save(rental);
   }
@@ -50,7 +63,7 @@ export class RentalsService {
       throw new NotFoundException(`Rental with ID ${id} not found`);
     }
 
-    const currentTime = new Date();
+    const currentTime = rental.returnDate || new Date();
     const rentalDateLocal = new Date(
       rental.rentalDate.getTime() -
         rental.rentalDate.getTimezoneOffset() * 60 * 1000,
@@ -85,11 +98,18 @@ export class RentalsService {
     await this.rentalRepository.remove(rental);
   }
 
-  async returnRental(id: number) {
+  async returnRental(id: number, returnBikeDto: ReturnBikeDto) {
+    const currentRental = await this.getRental(id);
     const updatedRental = {
       returnDate: new Date(),
+      amountPaid: (currentRental as any).currentPrice,
     };
     const response = await this.updateRental(id, updatedRental as any);
+
+    const dock = await this.docksService.getDockDetail(returnBikeDto.dockId);
+    await this.docksService.update(dock.id, {
+      bikes: dock.bikes.map((bike) => bike.id).push(response.bike.id) as any,
+    } as any);
     await this.bikeService.update(response.bike.id, {
       status: BikeStatus.FREE,
     } as any);

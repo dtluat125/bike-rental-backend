@@ -10,6 +10,7 @@ import {
 import { CreateRentalDto } from './dto/create-rental.dto';
 import { UpdateRentalDto } from './dto/update-rental.dto';
 import { RentalsService } from 'src/rentals/rentals.service';
+import { ReturnBikeDto } from 'src/rentals/dto/return-bike.dto';
 
 @Controller({ path: 'rentals', version: '1' })
 export class RentalsController {
@@ -21,8 +22,11 @@ export class RentalsController {
   }
 
   @Put(':id/finish-rental')
-  async returnRental(@Param('id') id: number) {
-    return this.rentalService.returnRental(id);
+  async returnRental(
+    @Param('id') id: number,
+    @Body() returnBikeDto: ReturnBikeDto,
+  ) {
+    return this.rentalService.returnRental(id, returnBikeDto);
   }
 
   @Get('')

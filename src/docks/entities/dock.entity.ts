@@ -13,10 +13,10 @@ export class Dock extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   location: string;
 
   @Column({ nullable: true })
@@ -26,5 +26,10 @@ export class Dock extends EntityHelper {
   @JoinColumn()
   bikes: Bike[];
 
+  @Column({ nullable: true })
+  dockArea: string;
+
+  @Column({ nullable: true })
+  totalPoints: number;
   // ... other properties if needed
 }

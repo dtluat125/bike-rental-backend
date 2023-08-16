@@ -23,6 +23,7 @@ export class CreateBikeDto {
   type: BikeType;
 
   @ApiProperty({ example: 'bike.jpg' })
+  @IsOptional()
   image: string;
 
   @ApiProperty({ example: 'ABC123' })

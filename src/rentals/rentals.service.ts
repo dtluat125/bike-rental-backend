@@ -76,7 +76,7 @@ export class RentalsService {
     );
     console.log(currentTime.getTime(), rentalDateLocal.getTime());
     const currentPrice = await this.pricingService.calculateRentingPrice(
-      35,
+      rentingTimeDifference,
       rental.bike.type,
       rental.pricing.id,
     );

@@ -22,6 +22,10 @@ export class UpdateDockDto {
   @IsOptional()
   totalPoints: number;
 
+  @ApiProperty({ example: 'dock.jpg' })
+  @IsOptional()
+  walkingDistance: number;
+
   @ApiProperty()
   @IsOptional()
   bikes: number[];

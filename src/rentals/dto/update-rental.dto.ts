@@ -9,4 +9,8 @@ export class UpdateRentalDto {
   @ApiProperty()
   @IsOptional()
   bike: number;
+
+  @ApiProperty()
+  @IsOptional()
+  pricing: number;
 }

@@ -6,7 +6,7 @@ export class Pricing extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: false })
+  @Column({ default: true })
   active: boolean;
 
   @Column()

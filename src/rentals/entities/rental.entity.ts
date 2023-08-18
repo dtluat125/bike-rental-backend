@@ -8,6 +8,7 @@ import {
 import { EntityHelper } from '../../utils/entity-helper';
 import { Bike } from '../../bike/entities/bike.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Pricing } from 'src/pricings/entities/pricing.entity';
 
 @Entity()
 export class Rental extends EntityHelper {
@@ -30,6 +31,10 @@ export class Rental extends EntityHelper {
 
   @Column({ default: 0 })
   amountPaid: number;
+
+  @ManyToOne(() => Pricing)
+  @JoinColumn({ name: 'pricingId' })
+  pricing: Pricing;
 
   // ... other properties if needed
 }

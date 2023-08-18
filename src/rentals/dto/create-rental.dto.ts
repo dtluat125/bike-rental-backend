@@ -9,4 +9,8 @@ export class CreateRentalDto {
   @ApiProperty()
   @IsNotEmpty()
   bike: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  pricing: number;
 }

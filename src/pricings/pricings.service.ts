@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePricingDto } from './dto/create-pricing.dto';
@@ -47,9 +51,11 @@ export class PricingsService {
   async calculateRentingPrice(
     durationInMinutes: number,
     bikeType: BikeType,
+    pricingId: number,
   ): Promise<number> {
+    if (!pricingId) throw new BadRequestException('Pricing Id not Specified');
     const activePricing = await this.pricingRepository.findOne({
-      where: { active: true },
+      where: { id: pricingId },
     });
     if (!activePricing) {
       throw new NotFoundException('Active pricing option not found');

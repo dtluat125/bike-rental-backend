@@ -34,6 +34,8 @@ export class RentalsService {
     );
     console.log('dock: ', dock);
     if (!dock) throw new BadRequestException('Bike not available in any docks');
+    const pricing = await this.pricingService.findOne(createRentalDto.pricing);
+    if (!pricing.active) throw new BadRequestException('Pricing not active');
     const rental = this.rentalRepository.create(
       createRentalDto as unknown as Rental,
     );
@@ -57,7 +59,7 @@ export class RentalsService {
   async getRental(id: number): Promise<Rental> {
     const rental = await this.rentalRepository.findOne({
       where: { id },
-      relations: ['bike'],
+      relations: ['bike', 'pricing'],
     });
     if (!rental) {
       throw new NotFoundException(`Rental with ID ${id} not found`);
@@ -76,6 +78,7 @@ export class RentalsService {
     const currentPrice = await this.pricingService.calculateRentingPrice(
       rentingTimeDifference,
       rental.bike.type,
+      rental.pricing.id,
     );
     return {
       ...rental,

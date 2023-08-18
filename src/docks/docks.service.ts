@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BikeService } from 'src/bike/bike.service';
 import { Repository } from 'typeorm';
 import { CreateDockDto } from './dto/create-dock.dto';
 import { UpdateDockDto } from './dto/update-dock.dto';
@@ -16,6 +17,7 @@ export class DocksService {
   constructor(
     @InjectRepository(Dock)
     private dockRepository: Repository<Dock>,
+    private bikeService: BikeService,
   ) {}
 
   async findAll(): Promise<Dock[]> {
@@ -77,12 +79,17 @@ export class DocksService {
   }
 
   async update(id: number, updateDockDto: UpdateDockDto): Promise<Dock> {
-    if (updateDockDto.bikes?.length > (updateDockDto.totalPoints || 0))
+    const dock = await this.getDockDetail(id);
+    if (updateDockDto.bikes?.length > (dock.totalPoints || 0))
       throw new BadRequestException(
         'Number of bikes must not exceed total points',
       );
-    const dock = await this.getDockDetail(id);
+    const bikes = await Promise.all(
+      updateDockDto.bikes.map((id) => this.bikeService.getBikeDetail(id)),
+    );
+    updateDockDto.bikes = bikes as any;
     Object.assign(dock, updateDockDto);
+    console.log(dock);
     return this.dockRepository.save(dock);
   }
 

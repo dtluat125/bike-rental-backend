@@ -55,7 +55,7 @@ export class PricingsService {
   ): Promise<number> {
     if (!pricingId) throw new BadRequestException('Pricing Id not Specified');
     const activePricing = await this.pricingRepository.findOne({
-      where: { id: pricingId },
+      where: { id: pricingId, active: true },
     });
     if (!activePricing) {
       throw new NotFoundException('Active pricing option not found');
@@ -64,9 +64,8 @@ export class PricingsService {
     let rentingPrice = 0;
 
     if (durationInMinutes > activePricing.freeThreshold) {
+      rentingPrice = activePricing.basePrice;
       if (durationInMinutes > activePricing.timeThreshold) {
-        rentingPrice = activePricing.basePrice + activePricing.additionalPrice;
-
         const additionalDuration =
           durationInMinutes - activePricing.timeThreshold;
         const additionalIntervals = Math.ceil(additionalDuration / 15);
@@ -89,13 +88,9 @@ export class PricingsService {
 
       if (
         activePricing.lateFee &&
-        durationInMinutes >
-          activePricing.timeThreshold + activePricing.refundThreshold
+        durationInMinutes > activePricing.timeThreshold
       ) {
-        const lateDuration =
-          durationInMinutes -
-          activePricing.timeThreshold -
-          activePricing.refundThreshold;
+        const lateDuration = durationInMinutes - activePricing.timeThreshold;
         const lateFee = Math.ceil(lateDuration / 15) * activePricing.lateFee;
         rentingPrice += lateFee;
       }
@@ -103,6 +98,7 @@ export class PricingsService {
     if (bikeType !== BikeType.STANDARD) {
       rentingPrice *= 1.5;
     }
+    console.log('rentingPrice', rentingPrice);
 
     return rentingPrice;
   }

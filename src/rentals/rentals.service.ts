@@ -76,7 +76,7 @@ export class RentalsService {
     );
     console.log(currentTime.getTime(), rentalDateLocal.getTime());
     const currentPrice = await this.pricingService.calculateRentingPrice(
-      rentingTimeDifference,
+      35,
       rental.bike.type,
       rental.pricing.id,
     );
@@ -110,8 +110,9 @@ export class RentalsService {
     const response = await this.updateRental(id, updatedRental as any);
 
     const dock = await this.docksService.getDockDetail(returnBikeDto.dockId);
+    console.log(dock.bikes.map((bike) => bike.id));
     await this.docksService.update(dock.id, {
-      bikes: dock.bikes.map((bike) => bike.id).push(response.bike.id) as any,
+      bikes: [...dock.bikes.map((bike) => bike.id), response.bike.id] as any,
     } as any);
     await this.bikeService.update(response.bike.id, {
       status: BikeStatus.FREE,
